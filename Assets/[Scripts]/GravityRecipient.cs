@@ -25,7 +25,8 @@ public class GravityRecipient : MonoBehaviour
             float strengthOverDistance = gravitySource.strength / distance;
             rigidbody.AddForce(direction * strengthOverDistance);
 
-            rigidbody.MoveRotation(Quaternion.LookRotation(rigidbody.velocity, Vector3.up));
+            if (rigidbody.velocity != Vector3.zero)
+                rigidbody.MoveRotation(Quaternion.LookRotation(rigidbody.velocity, Vector3.up));
             //// Torque
             //float angleDiff = Vector3.Angle(transform.forward, rb.velocity);
             //Vector3 cross = Vector3.Cross(transform.forward, rb.velocity);
