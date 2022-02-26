@@ -6,21 +6,26 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
+    public event Ship.ShipEventHandler onShipSelected;
+    public event Ship.ShipEventHandler onShipDeselected;
+
     private PlayerInput playerInput;
     private InputAction accelerateAction;
     private InputAction selectNextAction;
     private InputAction selectPrevAction;
     private LinkedList<Ship> controlledShips = new LinkedList<Ship>();
     private LinkedListNode<Ship> currentShipNode;
-    public Ship currentShip {
+    public Ship currentlySelectedShip {
         get { return currentShipNode?.Value; }
         set {
             LinkedListNode<Ship> found = controlledShips.Find(value);
             if (found != null)
             {
-                currentShip?.OnDeselect();
+                currentlySelectedShip?.OnDeselect();
+                onShipDeselected?.Invoke(currentlySelectedShip);
                 currentShipNode = found;
                 value.OnSelect();
+                onShipSelected?.Invoke(value);
             }
         }
     }
@@ -75,14 +80,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!ship) return;
 
-        if (currentShip && currentShip == ship)
+        if (currentlySelectedShip && currentlySelectedShip == ship)
             SelectNext();
         controlledShips.Remove(ship);
     }
 
     private void OnAcceleratePerformed(InputAction.CallbackContext obj)
     {
-        currentShip?.OnAccelerate(obj.ReadValue<Vector2>());
+        currentlySelectedShip?.OnAccelerate(obj.ReadValue<Vector2>());
     }
 
     private void OnSelectNextPerformed(InputAction.CallbackContext obj)
@@ -97,34 +102,39 @@ public class PlayerController : MonoBehaviour
 
     public void Select(Ship ship)
     {
-        currentShip = ship;
+        currentlySelectedShip = ship;
     }
 
     private void SelectNext()
     {
-        currentShip?.OnDeselect();
+        currentlySelectedShip?.OnDeselect();
+        onShipDeselected?.Invoke(currentlySelectedShip);
 
-        if (!currentShip)
+        if (!currentlySelectedShip)
             currentShipNode = controlledShips.First;
         else if (currentShipNode == controlledShips.Last)
             currentShipNode = controlledShips.First;
         else
             currentShipNode = currentShipNode.Next;
 
-        currentShip.OnSelect();
+        currentlySelectedShip.OnSelect();
+        onShipSelected?.Invoke(currentlySelectedShip);
+
     }
 
     private void SelectPrev()
     {
-        currentShip?.OnDeselect();
+        currentlySelectedShip?.OnDeselect();
+        onShipDeselected?.Invoke(currentlySelectedShip);
 
-        if (!currentShip)
+        if (!currentlySelectedShip)
             currentShipNode = controlledShips.First;
         else if (currentShipNode == controlledShips.First)
             currentShipNode = controlledShips.Last;
         else
             currentShipNode = currentShipNode.Previous;
 
-        currentShip.OnSelect();
+        currentlySelectedShip.OnSelect();
+        onShipSelected?.Invoke(currentlySelectedShip);
     }
 }

@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "Accelerate",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "25532a95-d2da-46f4-9ab0-a91edfda1989",
                     "expectedControlType": "Vector2",
                     "processors": "",

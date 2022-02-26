@@ -8,6 +8,8 @@ public class Ship : MonoBehaviour
     public delegate void ShipEventHandler(Ship ship);
     public static event ShipEventHandler onShipAdded;
     public static event ShipEventHandler onShipRemoved;
+    public event ShipEventHandler onShipSelected;
+    public event ShipEventHandler onShipDeselected;
 
     [SerializeField]
     private float decelerationConstant;
@@ -25,12 +27,17 @@ public class Ship : MonoBehaviour
     private Quaternion planetEntryRotation;
     private Quaternion planetEntryTargetRotation;
     private float planetEntryTime;
+    [SerializeField]
+    private Animator[] trailAnimators;
+    [SerializeField]
+    private Collider collider;
 
     int planetLayer;
     private Rigidbody rigidbody;
     private GravityRecipient gravityRecipient;
-    [SerializeField]
-    private Collider collider;
+    private int forceAnimationHash = Animator.StringToHash("Force");
+    private int landingAnimationHash = Animator.StringToHash("Landing");
+    private int takeOffAnimationHash = Animator.StringToHash("TakeOff");
 
     private void Awake()
     {
@@ -91,6 +98,11 @@ public class Ship : MonoBehaviour
         }
 
         rigidbody.AddForce(acceleration * accelerationForce);
+        foreach (Animator animator in trailAnimators)
+        {
+            animator.SetFloat(forceAnimationHash, acceleration.magnitude);
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -103,17 +115,24 @@ public class Ship : MonoBehaviour
             planetEntryTargetRotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
             rigidbody.angularVelocity = Vector3.zero;
             planetEntryTime = Time.time;
+
+            foreach (Animator animator in trailAnimators)
+            {
+                animator.SetTrigger(landingAnimationHash);
+            }
         }
     }
 
     public void OnSelect()
     {
         Debug.Log(gameObject.name + " selected!");
+        onShipSelected?.Invoke(this);
     }
 
     public void OnDeselect()
     {
         Debug.Log(gameObject.name + " deselected!");
+        onShipDeselected?.Invoke(this);
     }
 
     public void OnAccelerate(Vector2 value)
