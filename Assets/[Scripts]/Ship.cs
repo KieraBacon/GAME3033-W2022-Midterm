@@ -17,16 +17,27 @@ public class Ship : MonoBehaviour
     [SerializeField]
     private float accelerationForce;
     private Vector2 acceleration;
+    [SerializeField]
+    private Transform planetAttachmentPoint;
+    private float planetAttachmentPointDistance;
+    private Vector3 planetEntryVelocity;
+    private Vector3 planetEntryPosition;
+    private Quaternion planetEntryRotation;
+    private Quaternion planetEntryTargetRotation;
+    private float planetEntryTime;
 
     int planetLayer;
     private Rigidbody rigidbody;
     private GravityRecipient gravityRecipient;
+    [SerializeField]
+    private Collider collider;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
         gravityRecipient = GetComponent<GravityRecipient>();
         planetLayer = LayerMask.NameToLayer("Planet");
+        planetAttachmentPointDistance = Vector3.Distance(transform.position, planetAttachmentPoint.position);
     }
 
     private void OnEnable()
@@ -47,12 +58,31 @@ public class Ship : MonoBehaviour
                 gravityRecipient.enabled = false;
 
             // Do the turning and slowing animation
-            if (rigidbody.velocity != Vector3.zero)
-                rigidbody.velocity = Vector3.MoveTowards(rigidbody.velocity, Vector3.zero, decelerationConstant);
-            if (rigidbody.angularVelocity != Vector3.zero)
-                rigidbody.angularVelocity = Vector3.MoveTowards(rigidbody.angularVelocity, Vector3.zero, decelerationConstant);
-            if (transform.forward != transform.position - currentPlanet.transform.position)
-                rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(transform.position - currentPlanet.transform.position, Vector3.up), rotationConstant));
+            float distanceFromPlanet = Vector3.Distance(transform.position, currentPlanet.transform.position) - planetAttachmentPointDistance;
+            float radiusOfPlanet = currentPlanet.groundCollider.radius * currentPlanet.groundCollider.transform.lossyScale.x;
+            float radiusOfAtmosphere = currentPlanet.atmosphereCollider.radius * currentPlanet.atmosphereCollider.transform.lossyScale.x;
+            float normalizedDistanceToGround = 1 - Mathf.Clamp((distanceFromPlanet - radiusOfPlanet) / radiusOfAtmosphere, 0, 1);
+            float time = Time.time - planetEntryTime;
+
+            if (time < 1)
+            {
+                // Lerp the velocity down to zero
+                rigidbody.velocity = Vector3.Lerp(planetEntryVelocity, Vector3.zero, Mathf.Max(time, normalizedDistanceToGround));
+
+                // Rotate to face away from the ground
+                Quaternion slerp = Quaternion.Slerp(planetEntryRotation, Quaternion.LookRotation(transform.position - currentPlanet.transform.position), Mathf.SmoothStep(0, 1, time));
+                rigidbody.MoveRotation(slerp);
+            }
+            else if (time < 2)
+            {
+                if (planetEntryPosition == Vector3.zero)
+                    planetEntryPosition = transform.position;
+
+                rigidbody.velocity = Vector3.zero;
+                rigidbody.angularVelocity = Vector3.zero;
+                rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - currentPlanet.transform.position));
+                rigidbody.MovePosition(Vector3.Slerp(planetEntryPosition, currentPlanet.groundCollider.ClosestPoint(transform.position) + (transform.position - planetAttachmentPoint.position), Mathf.SmoothStep(0, 1, time - 1)));
+            }
         }
         else
         {
@@ -65,9 +95,14 @@ public class Ship : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == planetLayer)
+        if (!currentPlanet && other.gameObject.layer == planetLayer)
         {
-            currentPlanet = other.GetComponent<Planet>();
+            currentPlanet = other.GetComponentInParent<Planet>();
+            planetEntryVelocity = rigidbody.velocity;
+            planetEntryRotation = transform.rotation;
+            planetEntryTargetRotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
+            rigidbody.angularVelocity = Vector3.zero;
+            planetEntryTime = Time.time;
         }
     }
 

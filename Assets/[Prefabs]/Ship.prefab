@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8840566283197991262}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &112843177
 ParticleSystem:
@@ -4834,7 +4834,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8840566283197991262}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &656644621
 ParticleSystem:
@@ -9619,7 +9619,7 @@ GameObject:
   - component: {fileID: 695993652}
   - component: {fileID: 695993653}
   m_Layer: 6
-  m_Name: Box Collider
+  m_Name: Ship Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9637,7 +9637,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8840566283197991262}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!65 &695993653
 BoxCollider:
@@ -9665,7 +9665,7 @@ GameObject:
   - component: {fileID: 1018141905}
   - component: {fileID: 1018141904}
   m_Layer: 5
-  m_Name: SelectionCanvas
+  m_Name: Selection Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9684,7 +9684,7 @@ RectTransform:
   m_Children:
   - {fileID: 45957050940905264}
   m_Father: {fileID: 8840566283197991262}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -9783,9 +9783,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7361983949536741370}
+  - {fileID: 695993652}
   - {fileID: 656644619}
   - {fileID: 112843175}
-  - {fileID: 695993652}
+  - {fileID: 1628103829054550785}
   - {fileID: 1018141903}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -9821,7 +9822,8 @@ MonoBehaviour:
   decelerationConstant: 0.1
   rotationConstant: 6
   accelerationForce: 0
-  selectionCircle: {fileID: 0}
+  planetAttachmentPoint: {fileID: 1628103829054550785}
+  collider: {fileID: 695993653}
 --- !u!114 &5372440852605715630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9835,6 +9837,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationalForce: 0.1
+--- !u!1 &4769065037449298794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1628103829054550785}
+  m_Layer: 0
+  m_Name: Planet Attachment Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1628103829054550785
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4769065037449298794}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.45}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8840566283197991262}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8701341499427053396
 GameObject:
   m_ObjectHideFlags: 0
@@ -9847,8 +9879,9 @@ GameObject:
   - component: {fileID: 3642645130973901576}
   - component: {fileID: 7499969081582525505}
   - component: {fileID: 9134953853805254082}
+  - component: {fileID: 1077652424555547417}
   m_Layer: 5
-  m_Name: SelectionCircle
+  m_Name: Selection Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9955,6 +9988,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1077652424555547417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8701341499427053396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 455efd4813e6f084d8c45f542cf7796a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ship: {fileID: 1800646875}
 --- !u!1001 &7035110908304990225
 PrefabInstance:
   m_ObjectHideFlags: 0
