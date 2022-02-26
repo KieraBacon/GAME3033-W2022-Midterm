@@ -23,10 +23,10 @@ public class GravityRecipient : MonoBehaviour
             Vector3 direction = (gravitySource.transform.position - transform.position).normalized;
             float distance = Mathf.Max(Vector3.Distance(gravitySource.transform.position, transform.position), 0.1f);
             float strengthOverDistance = gravitySource.strength / distance;
-            rigidbody.AddForce(direction * strengthOverDistance);
 
-            if (rigidbody.velocity != Vector3.zero)
-                rigidbody.MoveRotation(Quaternion.LookRotation(rigidbody.velocity, Vector3.up));
+            Vector3 force = direction * strengthOverDistance;
+            rigidbody.AddForce(new Vector3(force.x, 0, force.z));
+
             //// Torque
             //float angleDiff = Vector3.Angle(transform.forward, rb.velocity);
             //Vector3 cross = Vector3.Cross(transform.forward, rb.velocity);

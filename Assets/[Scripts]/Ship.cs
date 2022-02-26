@@ -95,14 +95,18 @@ public class Ship : MonoBehaviour
         {
             if (gravityRecipient.enabled == false)
                 gravityRecipient.enabled = true;
+
+            Vector3 force = (transform.right * acceleration.x + transform.forward * acceleration.y) * accelerationForce;
+            rigidbody.AddForce(force);
+
+            if (rigidbody.velocity != Vector3.zero)
+                rigidbody.MoveRotation(Quaternion.LookRotation(rigidbody.velocity, Vector3.up));
         }
 
-        rigidbody.AddForce(acceleration * accelerationForce);
         foreach (Animator animator in trailAnimators)
         {
             animator.SetFloat(forceAnimationHash, acceleration.magnitude);
         }
-
     }
 
     private void OnTriggerEnter(Collider other)

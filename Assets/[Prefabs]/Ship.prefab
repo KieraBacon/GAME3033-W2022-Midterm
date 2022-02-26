@@ -9840,7 +9840,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4722879135794151318}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 3
   m_Drag: 0
   m_AngularDrag: 1
   m_UseGravity: 0
@@ -9862,7 +9862,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   decelerationConstant: 0.1
   rotationConstant: 6
-  accelerationForce: 0
+  accelerationForce: 6
   planetAttachmentPoint: {fileID: 1628103829054550785}
   trailAnimators:
   - {fileID: 8523633473552360712}
