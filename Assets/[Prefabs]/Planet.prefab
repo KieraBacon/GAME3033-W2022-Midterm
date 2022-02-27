@@ -246,6 +246,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _groundCollider: {fileID: 1483526325}
+  _groundMesh: {fileID: 1483526326}
+  unoccupiedMaterial: {fileID: 2100000, guid: 8f30144039c303b4f8c728f1fbfb19c5, type: 2}
+  occupiedMaterial: {fileID: 2100000, guid: 1835f2e464f4c3b4db80399fb5606e42, type: 2}
   _atmosphereCollider: {fileID: 2131665687}
   orbitRadius: 0
   orbitSpeed: 0
@@ -253,6 +256,7 @@ MonoBehaviour:
   rotationAxis: {x: 0, y: 1, z: 0}
   rotationSpeed: 0
   rotationStartingAngle: 0
+  maxShips: 1
 --- !u!114 &2653103529015697854
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,14 +7,20 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
+    public event Ship.ShipEventHandler onShipRemoved;
     public event Ship.ShipEventHandler onShipSelected;
     public event Ship.ShipEventHandler onShipDeselected;
+    public event Planet.OccupationStateEventHandler onPlanetOccupationChanged;
 
     private PlayerInput playerInput;
     private InputAction accelerateAction;
     private InputAction selectNextAction;
     private InputAction selectPrevAction;
+    private InputAction launchAction;
+    private LinkedList<Planet> occupiedPlanets = new LinkedList<Planet>();
+    public int numOccupiedPlanets => occupiedPlanets.Count;
     private LinkedList<Ship> controlledShips = new LinkedList<Ship>();
+    public int numControlledShips => controlledShips.Count;
     private LinkedListNode<Ship> currentShipNode;
     public Ship currentlySelectedShip {
         get { return currentShipNode?.Value; }
@@ -36,6 +43,7 @@ public class PlayerController : MonoBehaviour
         accelerateAction = playerInput.currentActionMap.FindAction("Accelerate");
         selectNextAction = playerInput.currentActionMap.FindAction("SelectNext");
         selectPrevAction = playerInput.currentActionMap.FindAction("SelectPrev");
+        launchAction = playerInput.currentActionMap.FindAction("Launch");
     }
 
     private void OnEnable()
@@ -46,6 +54,8 @@ public class PlayerController : MonoBehaviour
         accelerateAction.performed += OnAcceleratePerformed;
         selectNextAction.performed += OnSelectNextPerformed;
         selectPrevAction.performed += OnSelectPrevPerformed;
+        launchAction.performed += OnLaunch;
+        Planet.onOccupationChanged += OnOccupationStateChanged;
     }
 
     private void OnDisable()
@@ -83,6 +93,7 @@ public class PlayerController : MonoBehaviour
         if (currentlySelectedShip && currentlySelectedShip == ship)
             SelectNext();
         controlledShips.Remove(ship);
+        onShipRemoved?.Invoke(ship);
     }
 
     private void OnAcceleratePerformed(InputAction.CallbackContext obj)
@@ -136,5 +147,22 @@ public class PlayerController : MonoBehaviour
 
         currentlySelectedShip.OnSelect();
         onShipSelected?.Invoke(currentlySelectedShip);
+    }
+
+    private void OnLaunch(InputAction.CallbackContext obj)
+    {
+        currentlySelectedShip?.OnLaunch();
+    }
+
+    private void OnOccupationStateChanged(Planet planet, Planet.OccupationState occupationState)
+    {
+        if (occupationState == Planet.OccupationState.Occupied)
+        {
+            if (!occupiedPlanets.Contains(planet))
+            {
+                occupiedPlanets.AddLast(planet);
+                onPlanetOccupationChanged?.Invoke(planet, occupationState);
+            }
+        }
     }
 }

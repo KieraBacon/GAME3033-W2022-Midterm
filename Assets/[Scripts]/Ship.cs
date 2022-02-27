@@ -15,18 +15,17 @@ public class Ship : MonoBehaviour
     private float decelerationConstant;
     [SerializeField]
     private float rotationConstant;
-    private Planet currentPlanet;
+    [SerializeField]
+    private Planet _currentPlanet;
+    public Planet currentPlanet => _currentPlanet;
     [SerializeField]
     private float accelerationForce;
     private Vector2 acceleration;
     [SerializeField]
     private Transform planetAttachmentPoint;
-    private float planetAttachmentPointDistance;
-    private Vector3 planetEntryVelocity;
     private Vector3 planetEntryPosition;
     private Quaternion planetEntryRotation;
-    private Quaternion planetEntryTargetRotation;
-    private float planetEntryTime;
+    private float planetEntryTime = float.NegativeInfinity;
     private float planetAttachmentAngle;
     private float planetAttachmentRadius;
     [SerializeField]
@@ -34,10 +33,15 @@ public class Ship : MonoBehaviour
     [SerializeField]
     private Collider collider;
     [SerializeField, Min(0.01f)]
-    private float landingTime = 2.0f;
+    private float landingDuration = 2.0f;
     [SerializeField]
     private float inPlanetRotationSpeed;
-    private bool attachedToPlanet;
+    [SerializeField, Min(0.01f)]
+    private float launchDuration = 2.0f;
+    private float launchTime = float.NegativeInfinity;
+    [SerializeField]
+    private float launchSpeed;
+    private Vector3 launchPosition;
 
     int planetLayer;
     private Rigidbody rigidbody;
@@ -46,12 +50,22 @@ public class Ship : MonoBehaviour
     private int landingAnimationHash = Animator.StringToHash("Landing");
     private int takeOffAnimationHash = Animator.StringToHash("TakeOff");
 
+    private void OnValidate()
+    {
+        SetupInitialPositioning();
+    }
+
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
         gravityRecipient = GetComponent<GravityRecipient>();
         planetLayer = LayerMask.NameToLayer("Planet");
-        planetAttachmentPointDistance = Vector3.Distance(transform.position, planetAttachmentPoint.position);
+        //planetAttachmentPointDistance = Vector3.Distance(transform.position, planetAttachmentPoint.position);
+    }
+
+    private void Start()
+    {
+        SetupInitialPositioning();
     }
 
     private void OnEnable()
@@ -66,45 +80,57 @@ public class Ship : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (currentPlanet)
+        if (_currentPlanet)
         {
             if (gravityRecipient.enabled == true)
                 gravityRecipient.enabled = false;
 
-            if (!attachedToPlanet)
+            if (planetEntryTime > 0)
             {
-                // Do the turning and slowing animation
-                float time = Time.time - planetEntryTime;
-
-                if (time < landingTime)
+                float entryTime = Time.time - planetEntryTime;
+                if (entryTime < landingDuration)
                 {
                     if (planetEntryPosition == Vector3.zero)
                         planetEntryPosition = transform.position;
 
                     rigidbody.velocity = Vector3.zero;
                     rigidbody.angularVelocity = Vector3.zero;
-                    rigidbody.MovePosition(Vector3.Lerp(planetEntryPosition, currentPlanet.groundCollider.ClosestPoint(transform.position) + (transform.position - planetAttachmentPoint.position), time / landingTime));
-                    rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - currentPlanet.transform.position));
+                    rigidbody.MovePosition(Vector3.Lerp(planetEntryPosition, _currentPlanet.groundCollider.ClosestPoint(transform.position) + (transform.position - planetAttachmentPoint.position), entryTime / landingDuration));
+                    Quaternion slerp = Quaternion.Slerp(planetEntryRotation, Quaternion.LookRotation(transform.position - _currentPlanet.transform.position), Mathf.SmoothStep(0, 1, entryTime / landingDuration));
+                    rigidbody.MoveRotation(slerp);
                 }
                 else
                 {
-                    attachedToPlanet = true;
-                    Vector3 local = transform.position - currentPlanet.transform.position;
-                    //planetAttachmentAngle = Mathf.Atan2(local.x, local.z);
-                    planetAttachmentAngle = Vector3.SignedAngle(Vector3.right, transform.position - currentPlanet.transform.position, Vector3.up);
-                    planetAttachmentRadius = Vector3.Distance(transform.position, currentPlanet.transform.position);
+                    planetEntryPosition = Vector3.zero;
+                    planetEntryTime = float.NegativeInfinity;
+                    planetAttachmentAngle = Vector3.SignedAngle(Vector3.right, transform.position - _currentPlanet.transform.position, Vector3.up);
+                    planetAttachmentRadius = Vector3.Distance(transform.position, _currentPlanet.transform.position);
+                }
+            }
+            else if (launchTime > 0)
+            {
+                float exitTime = Time.time - launchTime;
+
+                if (exitTime < launchDuration)
+                {
+                    if (launchPosition == Vector3.zero)
+                        launchPosition = transform.position - _currentPlanet.transform.position;
+
+                    rigidbody.MovePosition(Vector3.Lerp(_currentPlanet.transform.position + launchPosition, _currentPlanet.transform.position + (launchPosition * 3), exitTime / launchDuration));
+                    rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - _currentPlanet.transform.position));
+                }
+                else
+                {
+                    launchPosition = Vector3.zero;
+                    launchTime = float.NegativeInfinity;
+                    rigidbody.velocity = transform.forward * launchSpeed + _currentPlanet.velocity;
+                    _currentPlanet.DetachShip(this);
+                    _currentPlanet = null;
                 }
             }
             else
             {
-                planetAttachmentAngle += acceleration.x * inPlanetRotationSpeed * Time.fixedDeltaTime;
-                //transform.position = currentPlanet.transform.position + new Vector3(planetAttachmentRadius * Mathf.Cos(Mathf.Deg2Rad * planetAttachmentAngle), 0.0f, planetAttachmentRadius * Mathf.Sin(Mathf.Deg2Rad * planetAttachmentAngle));
-                //transform.rotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
-                //rigidbody.MovePosition(currentPlanet.transform.position + new Vector3(planetAttachmentRadius * Mathf.Cos(Mathf.Deg2Rad * planetAttachmentAngle), 0.0f, planetAttachmentRadius * Mathf.Sin(Mathf.Deg2Rad * planetAttachmentAngle)));
-                transform.position = currentPlanet.transform.position + Vector3.right * planetAttachmentRadius;
-                transform.RotateAround(currentPlanet.transform.position, Vector3.up, planetAttachmentAngle);
-                transform.rotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
-                //rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - currentPlanet.transform.position));
+                SetLocationRelativeToPlanet();
             }
         }
         else
@@ -125,14 +151,51 @@ public class Ship : MonoBehaviour
         }
     }
 
+    private void SetupInitialPositioning()
+    {
+        if (_currentPlanet)
+        {
+            _currentPlanet.AttachShip(this);
+            _currentPlanet.SetShipPositions();
+        }
+    }
+
+    public void SetLocationRelativeToPlanet(float overrideAngle)
+    {
+        if (!_currentPlanet) return;
+
+        planetAttachmentAngle = overrideAngle;
+        float attachmentDistance = Vector3.Distance(transform.position, planetAttachmentPoint.position);
+        transform.position = _currentPlanet.transform.position + Vector3.right * (_currentPlanet.surfaceRadius + attachmentDistance);
+        transform.RotateAround(_currentPlanet.transform.position, Vector3.up, planetAttachmentAngle);
+        transform.rotation = Quaternion.LookRotation(transform.position - _currentPlanet.transform.position);
+    }
+
+    public void SetLocationRelativeToPlanet()
+    {
+        if (!_currentPlanet) return;
+
+        planetAttachmentAngle += acceleration.x * inPlanetRotationSpeed * Time.fixedDeltaTime;
+        SetLocationRelativeToPlanet(planetAttachmentAngle);
+    }
+
+    internal void OnLaunch()
+    {
+        SetLocationRelativeToPlanet();
+        foreach (Animator animator in trailAnimators)
+        {
+            animator.SetTrigger(takeOffAnimationHash);
+        }
+        launchTime = Time.time;
+        Debug.Log("Launch at " + launchTime);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!currentPlanet && other.gameObject.layer == planetLayer)
+        if (!_currentPlanet && other.gameObject.layer == planetLayer)
         {
-            currentPlanet = other.GetComponentInParent<Planet>();
-            planetEntryVelocity = rigidbody.velocity;
+            _currentPlanet = other.GetComponentInParent<Planet>();
             planetEntryRotation = transform.rotation;
-            planetEntryTargetRotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
             rigidbody.angularVelocity = Vector3.zero;
             planetEntryTime = Time.time;
 
@@ -140,18 +203,28 @@ public class Ship : MonoBehaviour
             {
                 animator.SetTrigger(landingAnimationHash);
             }
+
+            if (_currentPlanet.atCapacity)
+            {
+                enabled = false;
+                Destroy(gameObject);
+            }
+            else
+                _currentPlanet.AttachShip(this);
+
+            gravityRecipient.enabled = false;
         }
     }
 
     public void OnSelect()
     {
-        Debug.Log(gameObject.name + " selected!");
+        Debug.Log(gameObject?.name + " selected!");
         onShipSelected?.Invoke(this);
     }
 
     public void OnDeselect()
     {
-        Debug.Log(gameObject.name + " deselected!");
+        Debug.Log(gameObject?.name + " deselected!");
         onShipDeselected?.Invoke(this);
     }
 
