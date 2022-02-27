@@ -53,9 +53,7 @@ public class Planet : MonoBehaviour
 
     private void SetToOrbitPosition(float angle)
     {
-        transform.localPosition = Vector3.zero;
-        transform.RotateAround(transform.position + Vector3.right * orbitRadius, Vector3.up, angle);
-        transform.localPosition = transform.localPosition - Vector3.right * orbitRadius;
+        transform.localPosition = new Vector3(orbitRadius * Mathf.Cos(Mathf.Deg2Rad * angle), 0.0f, orbitRadius * Mathf.Sin(Mathf.Deg2Rad * angle));
     }
 
     private void SetToRotation(float angle)

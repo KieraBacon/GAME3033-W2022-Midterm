@@ -9846,7 +9846,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &1800646875
 MonoBehaviour:
@@ -9868,6 +9868,7 @@ MonoBehaviour:
   - {fileID: 8523633473552360712}
   - {fileID: 2534296741919792726}
   collider: {fileID: 695993653}
+  landingTime: 2
 --- !u!114 &5372440852605715630
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,10 +27,17 @@ public class Ship : MonoBehaviour
     private Quaternion planetEntryRotation;
     private Quaternion planetEntryTargetRotation;
     private float planetEntryTime;
+    private float planetAttachmentAngle;
+    private float planetAttachmentRadius;
     [SerializeField]
     private Animator[] trailAnimators;
     [SerializeField]
     private Collider collider;
+    [SerializeField, Min(0.01f)]
+    private float landingTime = 2.0f;
+    [SerializeField]
+    private float inPlanetRotationSpeed;
+    private bool attachedToPlanet;
 
     int planetLayer;
     private Rigidbody rigidbody;
@@ -64,31 +71,40 @@ public class Ship : MonoBehaviour
             if (gravityRecipient.enabled == true)
                 gravityRecipient.enabled = false;
 
-            // Do the turning and slowing animation
-            float distanceFromPlanet = Vector3.Distance(transform.position, currentPlanet.transform.position) - planetAttachmentPointDistance;
-            float radiusOfPlanet = currentPlanet.groundCollider.radius * currentPlanet.groundCollider.transform.lossyScale.x;
-            float radiusOfAtmosphere = currentPlanet.atmosphereCollider.radius * currentPlanet.atmosphereCollider.transform.lossyScale.x;
-            float normalizedDistanceToGround = 1 - Mathf.Clamp((distanceFromPlanet - radiusOfPlanet) / radiusOfAtmosphere, 0, 1);
-            float time = Time.time - planetEntryTime;
-
-            if (time < 1)
+            if (!attachedToPlanet)
             {
-                // Lerp the velocity down to zero
-                rigidbody.velocity = Vector3.Lerp(planetEntryVelocity, Vector3.zero, Mathf.Max(time, normalizedDistanceToGround));
+                // Do the turning and slowing animation
+                float time = Time.time - planetEntryTime;
 
-                // Rotate to face away from the ground
-                Quaternion slerp = Quaternion.Slerp(planetEntryRotation, Quaternion.LookRotation(transform.position - currentPlanet.transform.position), Mathf.SmoothStep(0, 1, time));
-                rigidbody.MoveRotation(slerp);
+                if (time < landingTime)
+                {
+                    if (planetEntryPosition == Vector3.zero)
+                        planetEntryPosition = transform.position;
+
+                    rigidbody.velocity = Vector3.zero;
+                    rigidbody.angularVelocity = Vector3.zero;
+                    rigidbody.MovePosition(Vector3.Lerp(planetEntryPosition, currentPlanet.groundCollider.ClosestPoint(transform.position) + (transform.position - planetAttachmentPoint.position), time / landingTime));
+                    rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - currentPlanet.transform.position));
+                }
+                else
+                {
+                    attachedToPlanet = true;
+                    Vector3 local = transform.position - currentPlanet.transform.position;
+                    //planetAttachmentAngle = Mathf.Atan2(local.x, local.z);
+                    planetAttachmentAngle = Vector3.SignedAngle(Vector3.right, transform.position - currentPlanet.transform.position, Vector3.up);
+                    planetAttachmentRadius = Vector3.Distance(transform.position, currentPlanet.transform.position);
+                }
             }
-            else if (time < 2)
+            else
             {
-                if (planetEntryPosition == Vector3.zero)
-                    planetEntryPosition = transform.position;
-
-                rigidbody.velocity = Vector3.zero;
-                rigidbody.angularVelocity = Vector3.zero;
-                rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - currentPlanet.transform.position));
-                rigidbody.MovePosition(Vector3.Slerp(planetEntryPosition, currentPlanet.groundCollider.ClosestPoint(transform.position) + (transform.position - planetAttachmentPoint.position), Mathf.SmoothStep(0, 1, time - 1)));
+                planetAttachmentAngle += acceleration.x * inPlanetRotationSpeed * Time.fixedDeltaTime;
+                //transform.position = currentPlanet.transform.position + new Vector3(planetAttachmentRadius * Mathf.Cos(Mathf.Deg2Rad * planetAttachmentAngle), 0.0f, planetAttachmentRadius * Mathf.Sin(Mathf.Deg2Rad * planetAttachmentAngle));
+                //transform.rotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
+                //rigidbody.MovePosition(currentPlanet.transform.position + new Vector3(planetAttachmentRadius * Mathf.Cos(Mathf.Deg2Rad * planetAttachmentAngle), 0.0f, planetAttachmentRadius * Mathf.Sin(Mathf.Deg2Rad * planetAttachmentAngle)));
+                transform.position = currentPlanet.transform.position + Vector3.right * planetAttachmentRadius;
+                transform.RotateAround(currentPlanet.transform.position, Vector3.up, planetAttachmentAngle);
+                transform.rotation = Quaternion.LookRotation(transform.position - currentPlanet.transform.position);
+                //rigidbody.MoveRotation(Quaternion.LookRotation(transform.position - currentPlanet.transform.position));
             }
         }
         else
