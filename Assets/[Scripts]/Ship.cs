@@ -29,7 +29,7 @@ public class Ship : MonoBehaviour
     private float planetAttachmentAngle;
     private float planetAttachmentRadius;
     [SerializeField]
-    private Animator[] trailAnimators;
+    private Animator animator;
     [SerializeField]
     private Collider collider;
     [SerializeField, Min(0.01f)]
@@ -56,9 +56,10 @@ public class Ship : MonoBehaviour
     int planetLayer;
     private Rigidbody rigidbody;
     private GravityRecipient gravityRecipient;
-    private int forceAnimationHash = Animator.StringToHash("Force");
     private int landingAnimationHash = Animator.StringToHash("Landing");
-    private int takeOffAnimationHash = Animator.StringToHash("TakeOff");
+    private int launchAnimationHash = Animator.StringToHash("Launch");
+    private int forceAnimationHash = Animator.StringToHash("Force");
+    private int headingAnimationHash = Animator.StringToHash("Heading");
 
     private void OnValidate()
     {
@@ -161,10 +162,9 @@ public class Ship : MonoBehaviour
                 _fuel -= fuelExpenditure * Time.fixedDeltaTime;
                 fuelBar.amount = _fuel;
 
-                foreach (Animator animator in trailAnimators)
-                {
-                    animator.SetFloat(forceAnimationHash, acceleration.magnitude);
-                }
+                animator.SetFloat(forceAnimationHash, acceleration.y);
+                animator.SetFloat(headingAnimationHash, acceleration.x);
+                Debug.Log(acceleration.x);
             }
 
             if (rigidbody.velocity != Vector3.zero)
@@ -205,11 +205,8 @@ public class Ship : MonoBehaviour
         if (!currentPlanet) return;
 
         SetLocationRelativeToPlanet();
-        foreach (Animator animator in trailAnimators)
-        {
-            animator.SetTrigger(takeOffAnimationHash);
-            AudioManager.PlayClip(thrusterSound);
-        }
+        animator.SetTrigger(launchAnimationHash);
+        AudioManager.PlayClip(thrusterSound);
         launchTime = Time.time;
 
         Debug.Log("Launch at " + launchTime);
@@ -220,26 +217,25 @@ public class Ship : MonoBehaviour
         if (!_currentPlanet && other.gameObject.layer == planetLayer)
         {
             _currentPlanet = other.GetComponentInParent<Planet>();
-            planetEntryRotation = transform.rotation;
-            rigidbody.angularVelocity = Vector3.zero;
-            planetEntryTime = Time.time;
+            if (!_currentPlanet) return;
 
-            foreach (Animator animator in trailAnimators)
-            {
-                animator.SetTrigger(landingAnimationHash);
-            }
-            AudioManager.PlayClip(thrusterSound);
-
-            if (_currentPlanet.atCapacity)
+            Debug.Log("_currentPlanet.isOccupied: " + _currentPlanet.isOccupied);
+            if (_currentPlanet.isOccupied)
             {
                 enabled = false;
                 Destroy(gameObject);
             }
             else
+            {
+                planetEntryRotation = transform.rotation;
+                rigidbody.angularVelocity = Vector3.zero;
+                planetEntryTime = Time.time;
+                animator.SetTrigger(landingAnimationHash);
+                AudioManager.PlayClip(thrusterSound);
+                gravityRecipient.enabled = false;
+                fuelBar.gameObject.SetActive(false);
                 _currentPlanet.AttachShip(this);
-
-            gravityRecipient.enabled = false;
-            fuelBar.gameObject.SetActive(false);
+            }
         }
     }
 

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 112843175}
   - component: {fileID: 112843177}
   - component: {fileID: 112843176}
-  - component: {fileID: 2534296741919792726}
   m_Layer: 0
   m_Name: Right Ship Trail
   m_TagString: Untagged
@@ -4805,25 +4804,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!95 &2534296741919792726
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112843174}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5417f0cf65a870141aee183a3eaf3533, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &656644618
 GameObject:
   m_ObjectHideFlags: 0
@@ -4835,7 +4815,6 @@ GameObject:
   - component: {fileID: 656644619}
   - component: {fileID: 656644621}
   - component: {fileID: 656644620}
-  - component: {fileID: 8523633473552360712}
   m_Layer: 0
   m_Name: Left Ship Trail
   m_TagString: Untagged
@@ -9630,25 +9609,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!95 &8523633473552360712
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 656644618}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5417f0cf65a870141aee183a3eaf3533, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &695993651
 GameObject:
   m_ObjectHideFlags: 0
@@ -9835,6 +9795,7 @@ GameObject:
   - component: {fileID: 1800646876}
   - component: {fileID: 1800646875}
   - component: {fileID: 5372440852605715630}
+  - component: {fileID: 1154810151058823545}
   m_Layer: 6
   m_Name: Ship
   m_TagString: Untagged
@@ -9897,9 +9858,7 @@ MonoBehaviour:
   _currentPlanet: {fileID: 0}
   accelerationForce: 6
   planetAttachmentPoint: {fileID: 1628103829054550785}
-  trailAnimators:
-  - {fileID: 8523633473552360712}
-  - {fileID: 2534296741919792726}
+  animator: {fileID: 1154810151058823545}
   collider: {fileID: 695993653}
   landingDuration: 2
   inPlanetRotationSpeed: 100
@@ -9922,6 +9881,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationalForce: 0.1
+--- !u!95 &1154810151058823545
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4722879135794151318}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: dad9966b461d71245ba71770aefdcd87, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4769065037449298794
 GameObject:
   m_ObjectHideFlags: 0
@@ -10247,11 +10225,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 25
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10283,7 +10261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.0000076293945
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_AnchoredPosition.y
