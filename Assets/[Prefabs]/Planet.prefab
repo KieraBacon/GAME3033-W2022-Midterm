@@ -247,6 +247,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _groundCollider: {fileID: 1483526325}
   _atmosphereCollider: {fileID: 2131665687}
+  orbitRadius: 0
+  orbitSpeed: 0
+  orbitStartingAngle: 0
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationSpeed: 0
+  rotationStartingAngle: 0
 --- !u!114 &2653103529015697854
 MonoBehaviour:
   m_ObjectHideFlags: 0
