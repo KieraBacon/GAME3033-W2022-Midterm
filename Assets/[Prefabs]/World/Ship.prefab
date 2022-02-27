@@ -9856,7 +9856,7 @@ MonoBehaviour:
   decelerationConstant: 0.1
   rotationConstant: 6
   _currentPlanet: {fileID: 0}
-  accelerationForce: 6
+  accelerationForce: 10
   planetAttachmentPoint: {fileID: 1628103829054550785}
   animator: {fileID: 1154810151058823545}
   collider: {fileID: 695993653}
@@ -10261,7 +10261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.0000076293945
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2259397791988198841, guid: 59c6d212db7a5b44a8b835f1a14220f8, type: 3}
       propertyPath: m_AnchoredPosition.y
