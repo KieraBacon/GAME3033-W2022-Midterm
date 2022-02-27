@@ -20,15 +20,25 @@ public class HUDPanel : MonoBehaviour
         playerController = FindObjectOfType<PlayerController>();
     }
 
+    private void Start()
+    {
+        SetShipsText(playerController.numControlledShips);
+        SetTimeText(Time.time);
+        SetPlanetsText(playerController.numOccupiedPlanets, FindObjectsOfType<Planet>().Length);
+    }
+
     private void OnEnable()
     {
-        playerController.onShipRemoved += OnShipRemoved;
+        playerController.onShipAdded += OnShipQtyChanged;
+        playerController.onShipRemoved += OnShipQtyChanged;
         playerController.onPlanetOccupationChanged += OnPlanetOccupationChanged;
     }
 
     private void OnDisable()
     {
-        SetShipsText(playerController.numControlledShips);
+        playerController.onShipAdded += OnShipQtyChanged;
+        playerController.onShipRemoved += OnShipQtyChanged;
+        playerController.onPlanetOccupationChanged += OnPlanetOccupationChanged;
     }
 
     private void Update()
@@ -54,7 +64,7 @@ public class HUDPanel : MonoBehaviour
         planetsText.text = current + "/" + total;
     }
 
-    private void OnShipRemoved(Ship ship)
+    private void OnShipQtyChanged(Ship ship)
     {
         SetShipsText(playerController.numControlledShips);
     }

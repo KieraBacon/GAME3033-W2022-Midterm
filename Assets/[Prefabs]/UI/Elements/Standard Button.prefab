@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 7352254285822904234}
   - component: {fileID: 5808210221408193902}
   - component: {fileID: 8564528974876751071}
-  - component: {fileID: 5253792435371696287}
   - component: {fileID: 6291527827489765315}
   - component: {fileID: 5321527756771559288}
+  - component: {fileID: 8801943565147848743}
   m_Layer: 5
   m_Name: Standard Button
   m_TagString: Untagged
@@ -124,26 +124,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5253792435371696287
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1686169611541122182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 256
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!114 &6291527827489765315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +164,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &8801943565147848743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1686169611541122182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a005cdc3e7a398c449ab52859acee4a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickSound: {fileID: 8300000, guid: 0e84577d87c45fd4a85d1865366a315b, type: 3}
 --- !u!1001 &5647791842658751415
 PrefabInstance:
   m_ObjectHideFlags: 0

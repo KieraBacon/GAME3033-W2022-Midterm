@@ -127,6 +127,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6980348115443927641, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
+      propertyPath: defaultSelection
+      value: 
+      objectReference: {fileID: 791696002701231657}
+    - target: {fileID: 7450896355533246016, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
 --- !u!224 &1393863914003971735 stripped
@@ -259,6 +267,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
+--- !u!1 &791696002701231657 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1686169611541122182, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
+  m_PrefabInstance: {fileID: 2133247180401347247}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7005726142381035638
 PrefabInstance:
   m_ObjectHideFlags: 0

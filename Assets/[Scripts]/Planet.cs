@@ -58,6 +58,9 @@ public class Planet : MonoBehaviour
     public int numShips => attachedShips.Count;
     public bool atCapacity => numShips >= maxShips;
     private Vector3 _velocity;
+    [SerializeField]
+    private AudioClip occupationSound;
+
     public Vector3 velocity => _velocity;
 
     private void OnValidate()
@@ -107,14 +110,18 @@ public class Planet : MonoBehaviour
         onOccupationChanged?.Invoke(this, occupationState);
     }
 
-    public void AttachShip(Ship ship)
+    public void AttachShip(Ship ship, bool notify = true)
     {
         ClearNullFromAttachedShips();
         if (!attachedShips.Contains(ship))
         {
             attachedShips.AddLast(ship);
             if (attachedShips.Count > 0)
+            {
                 SetOccupationState(OccupationState.Occupied);
+                if (notify)
+                    AudioManager.PlayClip(occupationSound);
+            }
         }
     }
 

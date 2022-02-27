@@ -257,6 +257,7 @@ MonoBehaviour:
   rotationSpeed: 0
   rotationStartingAngle: 0
   maxShips: 1
+  occupationSound: {fileID: 8300000, guid: 6cbc7d0785f4ccc4ebb65405c6fc545e, type: 3}
 --- !u!114 &2653103529015697854
 MonoBehaviour:
   m_ObjectHideFlags: 0

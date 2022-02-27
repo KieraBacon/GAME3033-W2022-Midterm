@@ -48,7 +48,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -4872,7 +4872,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
-  prewarm: 1
+  prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -9862,6 +9862,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   decelerationConstant: 0.1
   rotationConstant: 6
+  _currentPlanet: {fileID: 0}
   accelerationForce: 6
   planetAttachmentPoint: {fileID: 1628103829054550785}
   trailAnimators:
@@ -9872,6 +9873,8 @@ MonoBehaviour:
   inPlanetRotationSpeed: 100
   launchDuration: 0.5
   launchSpeed: 10
+  selectionSound: {fileID: 8300000, guid: 0e84577d87c45fd4a85d1865366a315b, type: 3}
+  thrusterSound: {fileID: 8300000, guid: 066e8143291f6084893d59499b50db25, type: 3}
 --- !u!114 &5372440852605715630
 MonoBehaviour:
   m_ObjectHideFlags: 0

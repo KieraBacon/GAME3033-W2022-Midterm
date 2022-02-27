@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,32 +16,42 @@ public class GameManager : MonoBehaviour
         Victory,
     }
 
+    [SerializeField]
+    private AudioClip gameMusic;
+
     private GameState _gameState;
     public GameState gameState { get { return _gameState; } set { _gameState = value; onGameStateChanged?.Invoke(value); } }
-    private PlayerController playerController;
 
     private void Awake()
     {
-        playerController = FindObjectOfType<PlayerController>();
+        TimeManager.StartNewLevel();
+        TimeManager.timeScale = 1;
+        TimeManager.paused = false;
+        AudioManager.PlayMusic(gameMusic);
     }
 
     private void OnEnable()
     {
-        playerController.onShipRemoved += OnShipRemoved;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        Ship.onShipRemoved += OnShipRemoved;
         Planet.onOccupationChanged += OnOccupationChanged;
     }
 
     private void OnDisable()
     {
-        playerController.onShipRemoved -= OnShipRemoved;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        Ship.onShipRemoved -= OnShipRemoved;
         Planet.onOccupationChanged -= OnOccupationChanged;
     }
 
     private void OnShipRemoved(Ship ship)
     {
-        if (playerController.numControlledShips <= 0)
+        foreach (PlayerController playerController in FindObjectsOfType<PlayerController>())
         {
-            gameState = GameState.Loss;
+            if (playerController.numControlledShips <= 0)
+            {
+                gameState = GameState.Loss;
+            }
         }
     }
 
@@ -59,5 +70,10 @@ public class GameManager : MonoBehaviour
         {
             gameState = GameState.Victory;
         }
+    }
+
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    {
+        TimeManager.StartNewLevel();
     }
 }

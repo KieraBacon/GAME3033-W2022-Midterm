@@ -42,6 +42,10 @@ public class Ship : MonoBehaviour
     [SerializeField]
     private float launchSpeed;
     private Vector3 launchPosition;
+    [SerializeField]
+    private AudioClip selectionSound;
+    [SerializeField]
+    private AudioClip thrusterSound;
 
     int planetLayer;
     private Rigidbody rigidbody;
@@ -155,7 +159,7 @@ public class Ship : MonoBehaviour
     {
         if (_currentPlanet)
         {
-            _currentPlanet.AttachShip(this);
+            _currentPlanet.AttachShip(this, false);
             _currentPlanet.SetShipPositions();
         }
     }
@@ -181,10 +185,13 @@ public class Ship : MonoBehaviour
 
     internal void OnLaunch()
     {
+        if (!currentPlanet) return;
+
         SetLocationRelativeToPlanet();
         foreach (Animator animator in trailAnimators)
         {
             animator.SetTrigger(takeOffAnimationHash);
+            AudioManager.PlayClip(thrusterSound);
         }
         launchTime = Time.time;
         Debug.Log("Launch at " + launchTime);
@@ -202,6 +209,7 @@ public class Ship : MonoBehaviour
             foreach (Animator animator in trailAnimators)
             {
                 animator.SetTrigger(landingAnimationHash);
+                AudioManager.PlayClip(thrusterSound);
             }
 
             if (_currentPlanet.atCapacity)
@@ -220,6 +228,7 @@ public class Ship : MonoBehaviour
     {
         Debug.Log(gameObject?.name + " selected!");
         onShipSelected?.Invoke(this);
+        AudioManager.PlayClip(selectionSound);
     }
 
     public void OnDeselect()

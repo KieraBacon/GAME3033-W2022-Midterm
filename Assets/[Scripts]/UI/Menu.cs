@@ -13,18 +13,32 @@ public class Menu : MonoBehaviour
     private GameObject panel;
     [SerializeField]
     private GameObject defaultSelection;
+    [SerializeField]
+    private bool pauseWhileOpen;
     public bool isShown => panel.activeInHierarchy;
+
+    private void Start()
+    {
+        if (panel.activeInHierarchy)
+            Show();
+    }
 
     public void Show(bool selectDefault = true)
     {
         panel.SetActive(true);
         onMenuShown?.Invoke(this);
         EventSystem.current.SetSelectedGameObject(defaultSelection);
+
+        if (pauseWhileOpen)
+            TimeManager.paused = true;
     }
 
     public void Hide()
     {
         panel.SetActive(false);
         onMenuHidden?.Invoke(this);
+
+        if (pauseWhileOpen)
+            TimeManager.paused = false;
     }
 }

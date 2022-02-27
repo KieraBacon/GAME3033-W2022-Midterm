@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
+    public event Ship.ShipEventHandler onShipAdded;
     public event Ship.ShipEventHandler onShipRemoved;
     public event Ship.ShipEventHandler onShipSelected;
     public event Ship.ShipEventHandler onShipDeselected;
@@ -75,7 +76,7 @@ public class PlayerController : MonoBehaviour
         controlledShips.Clear();
         foreach (Ship ship in FindObjectsOfType<Ship>())
         {
-            controlledShips.AddLast(ship);
+            OnShipAdded(ship);
         }
     }
 
@@ -84,6 +85,7 @@ public class PlayerController : MonoBehaviour
         if (!ship) return;
 
         controlledShips.AddLast(ship);
+        onShipAdded?.Invoke(ship);
     }
 
     private void OnShipRemoved(Ship ship)
