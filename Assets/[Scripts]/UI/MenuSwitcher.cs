@@ -17,6 +17,7 @@ public class MenuSwitcher : MonoBehaviour
     private SubmenuButtonPair[] submenuButtonPairs;
 
     private LinkedList<Menu> submenus = new LinkedList<Menu>();
+    private bool activeSwitching = false;
 
     private void Awake()
     {
@@ -34,10 +35,33 @@ public class MenuSwitcher : MonoBehaviour
         {
             pair.button.onClick.AddListener(() => Switch(pair.menu, pair.selection));
         }
+
+        foreach (Menu submenu in submenus)
+        {
+            submenu.onMenuShown += OnSubmenuShown;
+            submenu.onMenuHidden += OnSubmenuHidden;
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (SubmenuButtonPair pair in submenuButtonPairs)
+        {
+            pair.button.onClick.RemoveListener(() => Switch(pair.menu, pair.selection));
+        }
+
+
+        foreach (Menu submenu in submenus)
+        {
+            submenu.onMenuShown -= OnSubmenuShown;
+            submenu.onMenuHidden -= OnSubmenuHidden;
+        }
     }
 
     public void Switch(Menu menu, GameObject selectable = null)
     {
+        activeSwitching = true;
+
         foreach (Menu submenu in submenus)
         {
             if (submenu.isShown && submenu != menu)
@@ -57,5 +81,21 @@ public class MenuSwitcher : MonoBehaviour
                 }
             }
         }
+
+        activeSwitching = false;
+    }
+
+    private void OnSubmenuShown(Menu menu)
+    {
+        if (activeSwitching) return;
+
+        Switch(menu);
+    }
+
+    private void OnSubmenuHidden(Menu menu)
+    {
+        if (activeSwitching) return;
+
+        Switch(submenus.First.Value);
     }
 }

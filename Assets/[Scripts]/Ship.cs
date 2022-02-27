@@ -46,6 +46,12 @@ public class Ship : MonoBehaviour
     private AudioClip selectionSound;
     [SerializeField]
     private AudioClip thrusterSound;
+    [SerializeField]
+    private float fuelExpenditure;
+    private float _fuel;
+    public float fuel => _fuel;
+    [SerializeField]
+    private Bar fuelBar;
 
     int planetLayer;
     private Rigidbody rigidbody;
@@ -70,6 +76,7 @@ public class Ship : MonoBehaviour
     private void Start()
     {
         SetupInitialPositioning();
+        _fuel = 1;
     }
 
     private void OnEnable()
@@ -86,6 +93,8 @@ public class Ship : MonoBehaviour
     {
         if (_currentPlanet)
         {
+            if (fuelBar.gameObject.activeInHierarchy)
+                fuelBar.gameObject.SetActive(false);
             if (gravityRecipient.enabled == true)
                 gravityRecipient.enabled = false;
 
@@ -109,6 +118,7 @@ public class Ship : MonoBehaviour
                     planetEntryTime = float.NegativeInfinity;
                     planetAttachmentAngle = Vector3.SignedAngle(Vector3.right, transform.position - _currentPlanet.transform.position, Vector3.up);
                     planetAttachmentRadius = Vector3.Distance(transform.position, _currentPlanet.transform.position);
+                    _fuel = 1;
                 }
             }
             else if (launchTime > 0)
@@ -130,6 +140,7 @@ public class Ship : MonoBehaviour
                     rigidbody.velocity = transform.forward * launchSpeed + _currentPlanet.velocity;
                     _currentPlanet.DetachShip(this);
                     _currentPlanet = null;
+                    fuelBar.gameObject.SetActive(true);
                 }
             }
             else
@@ -142,16 +153,22 @@ public class Ship : MonoBehaviour
             if (gravityRecipient.enabled == false)
                 gravityRecipient.enabled = true;
 
-            Vector3 force = (transform.right * acceleration.x + transform.forward * acceleration.y) * accelerationForce;
-            rigidbody.AddForce(force);
+
+            if (acceleration != Vector2.zero && _fuel > 0)
+            {
+                Vector3 force = (transform.right * acceleration.x + transform.forward * acceleration.y) * accelerationForce;
+                rigidbody.AddForce(force);
+                _fuel -= fuelExpenditure * Time.fixedDeltaTime;
+                fuelBar.amount = _fuel;
+
+                foreach (Animator animator in trailAnimators)
+                {
+                    animator.SetFloat(forceAnimationHash, acceleration.magnitude);
+                }
+            }
 
             if (rigidbody.velocity != Vector3.zero)
                 rigidbody.MoveRotation(Quaternion.LookRotation(rigidbody.velocity, Vector3.up));
-        }
-
-        foreach (Animator animator in trailAnimators)
-        {
-            animator.SetFloat(forceAnimationHash, acceleration.magnitude);
         }
     }
 
@@ -194,6 +211,7 @@ public class Ship : MonoBehaviour
             AudioManager.PlayClip(thrusterSound);
         }
         launchTime = Time.time;
+
         Debug.Log("Launch at " + launchTime);
     }
 
@@ -209,8 +227,8 @@ public class Ship : MonoBehaviour
             foreach (Animator animator in trailAnimators)
             {
                 animator.SetTrigger(landingAnimationHash);
-                AudioManager.PlayClip(thrusterSound);
             }
+            AudioManager.PlayClip(thrusterSound);
 
             if (_currentPlanet.atCapacity)
             {
@@ -221,6 +239,7 @@ public class Ship : MonoBehaviour
                 _currentPlanet.AttachShip(this);
 
             gravityRecipient.enabled = false;
+            fuelBar.gameObject.SetActive(false);
         }
     }
 

@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public delegate void GameStateChangedEventHandler(GameState gameState);
-    public static GameStateChangedEventHandler onGameStateChanged;
+    public static event GameStateChangedEventHandler onGameStateChanged;
+    public static event Action onPause;
 
     public enum GameState
     {
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     private GameState _gameState;
     public GameState gameState { get { return _gameState; } set { _gameState = value; onGameStateChanged?.Invoke(value); } }
+    private PlayerController playerController;
 
     private void Awake()
     {
@@ -28,30 +30,28 @@ public class GameManager : MonoBehaviour
         TimeManager.timeScale = 1;
         TimeManager.paused = false;
         AudioManager.PlayMusic(gameMusic);
+        playerController = FindObjectOfType<PlayerController>();
     }
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        Ship.onShipRemoved += OnShipRemoved;
         Planet.onOccupationChanged += OnOccupationChanged;
+        playerController.onShipRemoved += OnShipRemoved;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        Ship.onShipRemoved -= OnShipRemoved;
         Planet.onOccupationChanged -= OnOccupationChanged;
+        playerController.onShipRemoved += OnShipRemoved;
     }
 
     private void OnShipRemoved(Ship ship)
     {
-        foreach (PlayerController playerController in FindObjectsOfType<PlayerController>())
+        if (playerController.numControlledShips <= 0)
         {
-            if (playerController.numControlledShips <= 0)
-            {
-                gameState = GameState.Loss;
-            }
+            gameState = GameState.Loss;
         }
     }
 
@@ -75,5 +75,10 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
         TimeManager.StartNewLevel();
+    }
+
+    public static void Pause()
+    {
+        onPause?.Invoke();
     }
 }

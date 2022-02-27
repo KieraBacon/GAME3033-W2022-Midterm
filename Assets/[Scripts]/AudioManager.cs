@@ -19,6 +19,7 @@ public class AudioManager : MonoBehaviour
     }
 
     private static readonly int soundChannels = 8;
+    private static AudioSource musicSource = null;
     private static Queue<AudioSource> audioSources = new Queue<AudioSource>();
 
     private void Awake()
@@ -36,13 +37,17 @@ public class AudioManager : MonoBehaviour
 
     private static void Init()
     {
+        musicSource = new GameObject("Music Source").AddComponent<AudioSource>();
+        musicSource.transform.SetParent(_instance.transform);
+        musicSource.playOnAwake = false;
+
         if (audioSources.Count < soundChannels)
         {
             for (int i = audioSources.Count; i < soundChannels; i++)
             {
                 AudioSource audioSource = new GameObject("Audio Source").AddComponent<AudioSource>();
-                audioSource.playOnAwake = false;
                 audioSource.transform.SetParent(_instance.transform);
+                audioSource.playOnAwake = false;
                 audioSources.Enqueue(audioSource);
             }
         }
@@ -57,15 +62,15 @@ public class AudioManager : MonoBehaviour
 
     public static void PlayMusic(AudioClip clip)
     {
-        AudioSource source = instance.FetchAudioSource();
-        if (!source || !source.gameObject.activeInHierarchy) return;
+        AudioManager audioManager = instance;
+        if (!musicSource || !musicSource.gameObject.activeInHierarchy) return;
 
-        source.Stop();
-        source.transform.position = Vector3.zero;
-        source.spatialBlend = 0;
-        source.loop = true;
-        source.clip = clip;
-        source.Play();
+        musicSource.Stop();
+        musicSource.transform.position = Vector3.zero;
+        musicSource.spatialBlend = 0;
+        musicSource.loop = true;
+        musicSource.clip = clip;
+        musicSource.Play();
     }
 
     public static void PlayClip(AudioClip clip)

@@ -15,18 +15,30 @@ public class WorldSpaceUILocator : MonoBehaviour
         camera = Camera.main;
     }
 
+    private void OnValidate()
+    {
+        canvas = GetComponent<Canvas>();
+        camera = Camera.main;
+        SetPosition();
+    }
+
     private void LateUpdate()
+    {
+        SetPosition();
+    }
+
+    private void SetPosition()
     {
         if (canvas.enabled && !attachmentPoint)
         {
             canvas.enabled = false;
         }
-        else
+        else if (attachmentPoint)
         {
             if (!canvas.enabled)
                 canvas.enabled = true;
 
-            transform.position = camera.WorldToViewportPoint(attachmentPoint.position);
+            transform.position = camera.WorldToScreenPoint(attachmentPoint.position);
         }
     }
 }

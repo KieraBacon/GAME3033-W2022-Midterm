@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private InputAction selectNextAction;
     private InputAction selectPrevAction;
     private InputAction launchAction;
+    private InputAction pauseAction;
     private LinkedList<Planet> occupiedPlanets = new LinkedList<Planet>();
     public int numOccupiedPlanets => occupiedPlanets.Count;
     private LinkedList<Ship> controlledShips = new LinkedList<Ship>();
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
         selectNextAction = playerInput.currentActionMap.FindAction("SelectNext");
         selectPrevAction = playerInput.currentActionMap.FindAction("SelectPrev");
         launchAction = playerInput.currentActionMap.FindAction("Launch");
+        pauseAction = playerInput.currentActionMap.FindAction("Pause");
     }
 
     private void OnEnable()
@@ -56,6 +58,7 @@ public class PlayerController : MonoBehaviour
         selectNextAction.performed += OnSelectNextPerformed;
         selectPrevAction.performed += OnSelectPrevPerformed;
         launchAction.performed += OnLaunch;
+        pauseAction.performed += OnPause;
         Planet.onOccupationChanged += OnOccupationStateChanged;
     }
 
@@ -67,6 +70,8 @@ public class PlayerController : MonoBehaviour
         accelerateAction.performed -= OnAcceleratePerformed;
         selectNextAction.performed -= OnSelectNextPerformed;
         selectPrevAction.performed -= OnSelectPrevPerformed;
+        launchAction.performed -= OnLaunch;
+        pauseAction.performed -= OnPause;
     }
 
     private void Start()
@@ -154,6 +159,11 @@ public class PlayerController : MonoBehaviour
     private void OnLaunch(InputAction.CallbackContext obj)
     {
         currentlySelectedShip?.OnLaunch();
+    }
+
+    private void OnPause(InputAction.CallbackContext obj)
+    {
+        GameManager.Pause();
     }
 
     private void OnOccupationStateChanged(Planet planet, Planet.OccupationState occupationState)
