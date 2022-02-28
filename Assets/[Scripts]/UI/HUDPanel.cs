@@ -23,7 +23,7 @@ public class HUDPanel : MonoBehaviour
     private void Start()
     {
         SetShipsText(playerController.numControlledShips);
-        SetTimeText(Time.time);
+        SetTimeText(TimeManager.gameTime);
         SetPlanetsText(playerController.numOccupiedPlanets, FindObjectsOfType<Planet>().Length);
     }
 
@@ -43,7 +43,7 @@ public class HUDPanel : MonoBehaviour
 
     private void Update()
     {
-        SetTimeText(Time.time);
+        SetTimeText(TimeManager.gameTime);
     }
 
     private void SetShipsText(int ships)

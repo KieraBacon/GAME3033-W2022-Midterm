@@ -6,12 +6,12 @@ public class TimeManager
     public static float timeScale { get { return _timeScale; } set { SetTimeScale(value); } }
     private static bool _paused;
     public static bool paused { get { return _paused; } set { SetPaused(value); } }
-    private static float _gameTime;
-    public static float gameTime => Time.time - _gameTime;
+    private static float _gameStartTime;
+    public static float gameTime => Time.time - _gameStartTime;
 
     public static void StartNewLevel()
     {
-        _gameTime = Time.time;
+        _gameStartTime = Time.time;
     }
 
     private static void SetTimeScale(float value)
