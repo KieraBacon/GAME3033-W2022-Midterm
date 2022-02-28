@@ -161,15 +161,16 @@ public class Ship : MonoBehaviour
                 rigidbody.AddForce(force);
                 _fuel -= fuelExpenditure * Time.fixedDeltaTime;
                 fuelBar.amount = _fuel;
-
-                animator.SetFloat(forceAnimationHash, acceleration.y);
-                animator.SetFloat(headingAnimationHash, acceleration.x);
-                Debug.Log(acceleration.x);
             }
 
             if (rigidbody.velocity != Vector3.zero)
                 rigidbody.MoveRotation(Quaternion.LookRotation(rigidbody.velocity, Vector3.up));
         }
+
+
+        float fuelMult = _fuel > 0 ? 1 : 0;
+        animator.SetFloat(forceAnimationHash, acceleration.y * fuelMult);
+        animator.SetFloat(headingAnimationHash, acceleration.x * fuelMult);
     }
 
     private void SetupInitialPositioning()
