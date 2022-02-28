@@ -192,6 +192,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6980348115443927641, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
+      propertyPath: pauseWhileOpen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6980348115443927641, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
+      propertyPath: defaultSelection
+      value: 
+      objectReference: {fileID: 8664891495825190617}
     - target: {fileID: 7450896355533246016, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
@@ -300,7 +308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 243
+      value: 268
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -475,7 +483,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 243
+      value: 268
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_AnchoredPosition.y

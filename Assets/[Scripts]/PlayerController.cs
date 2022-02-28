@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour
     public event Planet.OccupationStateEventHandler onPlanetOccupationChanged;
 
     private PlayerInput playerInput;
+    private CameraController cameraController;
+    private InputAction panCameraAction;
+    private InputAction overlookCameraAction;
     private InputAction accelerateAction;
     private InputAction selectNextAction;
     private InputAction selectPrevAction;
@@ -42,6 +45,9 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        cameraController = FindObjectOfType<CameraController>();
+        panCameraAction = playerInput.currentActionMap.FindAction("PanCamera");
+        overlookCameraAction = playerInput.currentActionMap.FindAction("OverlookCamera");
         accelerateAction = playerInput.currentActionMap.FindAction("Accelerate");
         selectNextAction = playerInput.currentActionMap.FindAction("SelectNext");
         selectPrevAction = playerInput.currentActionMap.FindAction("SelectPrev");
@@ -54,6 +60,9 @@ public class PlayerController : MonoBehaviour
         Ship.onShipAdded += OnShipAdded;
         Ship.onShipRemoved += OnShipRemoved;
 
+        panCameraAction.performed += OnPanCameraPerformed;
+        overlookCameraAction.performed += OnOverlookCameraPerformed;
+        overlookCameraAction.canceled += OnOverlookCameraCancelled;
         accelerateAction.performed += OnAcceleratePerformed;
         selectNextAction.performed += OnSelectNextPerformed;
         selectPrevAction.performed += OnSelectPrevPerformed;
@@ -67,6 +76,9 @@ public class PlayerController : MonoBehaviour
         Ship.onShipAdded -= OnShipAdded;
         Ship.onShipRemoved -= OnShipRemoved;
 
+        panCameraAction.performed -= OnPanCameraPerformed;
+        overlookCameraAction.performed -= OnOverlookCameraPerformed;
+        overlookCameraAction.canceled -= OnOverlookCameraCancelled;
         accelerateAction.performed -= OnAcceleratePerformed;
         selectNextAction.performed -= OnSelectNextPerformed;
         selectPrevAction.performed -= OnSelectPrevPerformed;
@@ -101,6 +113,21 @@ public class PlayerController : MonoBehaviour
             SelectNext();
         controlledShips.Remove(ship);
         onShipRemoved?.Invoke(ship);
+    }
+
+    private void OnPanCameraPerformed(InputAction.CallbackContext obj)
+    {
+        cameraController.OnPanCameraPerformed(obj.ReadValue<Vector2>());
+    }
+
+    private void OnOverlookCameraPerformed(InputAction.CallbackContext obj)
+    {
+        cameraController.OnOverlookCameraSet(true);
+    }
+
+    private void OnOverlookCameraCancelled(InputAction.CallbackContext obj)
+    {
+        cameraController.OnOverlookCameraSet(false);
     }
 
     private void OnAcceleratePerformed(InputAction.CallbackContext obj)

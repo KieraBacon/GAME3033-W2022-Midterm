@@ -550,6 +550,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6980348115443927641, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
+      propertyPath: pauseWhileOpen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6980348115443927641, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
+      propertyPath: defaultSelection
+      value: 
+      objectReference: {fileID: 1558635483442579821}
     - target: {fileID: 7450896355533246016, guid: d6069871e7b66f849b545ef66a40febf, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
