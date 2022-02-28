@@ -73,6 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 136804132692816692}
   defaultSelection: {fileID: 0}
+  pauseWhileOpen: 0
 --- !u!1 &136804132206404298
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +248,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 550, y: 0}
+  m_SizeDelta: {x: 600, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &136804132692816697
 CanvasRenderer:
@@ -344,7 +345,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
