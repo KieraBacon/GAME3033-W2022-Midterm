@@ -179,7 +179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 486
+      value: 536
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -215,7 +215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 275
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 1197259662154021555, guid: 8d1bd15eaad09334797477e37eca4ad9, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -293,18 +293,35 @@ PrefabInstance:
         on the same planet will definitely crash!
 
 
-        Use <b>Space</b> to launch
-        a ship, and <b>WASD</b> to navigate it.
+        Use <b>Space</b>/<b>Gamepad
+        South</b> to launch a ship.
 
-        Use <b>Tab</b> or <b>Shift+Tab</b>
-        to tab between your ships.
+        Use <b>WASD</b>/<b>Left joystick</b>
+        to navigate it.
 
-        You can also select ships by <b>clicking</b>
-        on them directly.'
+        Use <b>Tab</b> or <b>Shift+Tab</b> to tab between
+        your ships.
+
+        You can also select ships by <b>clicking</b> on them
+        directly.
+
+        Use <b>Arrow Keys</b>/<b>Middle Mouse</b>/<b>Right Joystick</b>
+        to pan the camera.
+
+        Use <b>CTRL</b>/<b>Right Mouse</b>/<b>Gamepad
+        North</b> to use the overlook camera.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076744038455450339, guid: 88cf9c8aec6a83e4a9d3041e40279754, type: 3}
+      propertyPath: m_fontSize
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2076744038455450339, guid: 88cf9c8aec6a83e4a9d3041e40279754, type: 3}
       propertyPath: m_fontStyle
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2076744038455450339, guid: 88cf9c8aec6a83e4a9d3041e40279754, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2167150462724349359, guid: 88cf9c8aec6a83e4a9d3041e40279754, type: 3}
       propertyPath: m_Pivot.x

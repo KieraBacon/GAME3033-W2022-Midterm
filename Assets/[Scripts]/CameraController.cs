@@ -15,6 +15,13 @@ public class CameraController : MonoBehaviour
     private Vector2 cameraPanningValue;
     [SerializeField]
     private Cinemachine.CinemachineVirtualCamera overlookCamera;
+    private Camera camera;
+
+    private void Awake()
+    {
+        camera = Camera.main;
+    }
+
     internal void OnPanCameraPerformed(Vector2 value)
     {
         cameraPanningValue = value;
@@ -27,8 +34,25 @@ public class CameraController : MonoBehaviour
             cameraTarget.transform.position = cameraTarget.transform.position.normalized * cameraRadius;
     }
 
-    internal void OnOverlookCameraSet(bool value)
+    public void OnOverlookCameraSet(bool value)
     {
         overlookCamera.Priority = value ? 11 : 0;
+    }
+
+    public bool CanSeeGameObject(GameObject gameObject)
+    {
+        if (!gameObject || !camera) return false;
+
+        Vector2 viewportPoint = camera.WorldToViewportPoint(gameObject.transform.position);
+        Debug.Log("viewportPoint" + viewportPoint);
+        if (viewportPoint.x >= 0 && viewportPoint.x <= 1 && viewportPoint.y >= 0 && viewportPoint.y <= 1)
+            return true;
+
+        return false;
+    }
+
+    public void FocusGameObject(GameObject gameObject)
+    {
+        cameraTarget.position = gameObject.transform.position;
     }
 }

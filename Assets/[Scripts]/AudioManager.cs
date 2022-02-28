@@ -9,6 +9,8 @@ public class AudioManager : MonoBehaviour
     {
         get
         {
+            if (isQuitting) return null;
+
             if (!_instance)
                 _instance = FindObjectOfType<AudioManager>();
             if (!_instance)
@@ -21,6 +23,7 @@ public class AudioManager : MonoBehaviour
     private static readonly int soundChannels = 8;
     private static AudioSource musicSource = null;
     private static Queue<AudioSource> audioSources = new Queue<AudioSource>();
+    private static bool isQuitting = false;
 
     private void Awake()
     {
@@ -33,6 +36,11 @@ public class AudioManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
         Init();
+    }
+
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
     }
 
     private static void Init()

@@ -33,7 +33,7 @@ public class WorldSpaceUILocator : MonoBehaviour
         {
             canvas.enabled = false;
         }
-        else if (attachmentPoint)
+        else if (camera && attachmentPoint)
         {
             if (!canvas.enabled)
                 canvas.enabled = true;

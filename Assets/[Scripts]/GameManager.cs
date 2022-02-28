@@ -37,14 +37,18 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         Planet.onOccupationChanged += OnOccupationChanged;
-        playerController.onShipRemoved += OnShipRemoved;
+
+        if (!playerController) return;
+            playerController.onShipRemoved += OnShipRemoved;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
         Planet.onOccupationChanged -= OnOccupationChanged;
-        playerController.onShipRemoved += OnShipRemoved;
+        
+        if (!playerController) return;
+            playerController.onShipRemoved += OnShipRemoved;
     }
 
     private void OnShipRemoved(Ship ship)

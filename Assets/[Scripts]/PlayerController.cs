@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private LinkedList<Ship> controlledShips = new LinkedList<Ship>();
     public int numControlledShips => controlledShips.Count;
     private LinkedListNode<Ship> currentShipNode;
+    private static bool isQuitting = false;
     public Ship currentlySelectedShip {
         get { return currentShipNode?.Value; }
         set {
@@ -97,9 +98,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
     private void OnShipAdded(Ship ship)
     {
-        if (!ship) return;
+        if (!ship || isQuitting) return;
 
         controlledShips.AddLast(ship);
         onShipAdded?.Invoke(ship);
@@ -107,7 +113,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnShipRemoved(Ship ship)
     {
-        if (!ship) return;
+        if (!ship || isQuitting) return;
 
         if (currentlySelectedShip && currentlySelectedShip == ship)
             SelectNext();
@@ -145,9 +151,25 @@ public class PlayerController : MonoBehaviour
         SelectPrev();
     }
 
+    private void FocusCamera()
+    {
+        if (!cameraController.CanSeeGameObject(currentlySelectedShip.gameObject))
+        {
+            cameraController.FocusGameObject(currentlySelectedShip.gameObject);
+        }
+    }
+
     public void Select(Ship ship)
     {
+        currentlySelectedShip?.OnDeselect();
+        onShipDeselected?.Invoke(currentlySelectedShip);
+
         currentlySelectedShip = ship;
+
+        currentlySelectedShip.OnSelect();
+        onShipSelected?.Invoke(currentlySelectedShip);
+
+        FocusCamera();
     }
 
     private void SelectNext()
@@ -165,6 +187,7 @@ public class PlayerController : MonoBehaviour
         currentlySelectedShip.OnSelect();
         onShipSelected?.Invoke(currentlySelectedShip);
 
+        FocusCamera();
     }
 
     private void SelectPrev()
@@ -181,6 +204,8 @@ public class PlayerController : MonoBehaviour
 
         currentlySelectedShip.OnSelect();
         onShipSelected?.Invoke(currentlySelectedShip);
+
+        FocusCamera();
     }
 
     private void OnLaunch(InputAction.CallbackContext obj)

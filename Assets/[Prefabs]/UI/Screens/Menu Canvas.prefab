@@ -142,8 +142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 132745738428054978}
-  defaultSelection: {fileID: 0}
-  pauseWhileOpen: 1
+  defaultSelection: {fileID: 2510472557595411799}
+  pauseWhileOpen: 0
 --- !u!1001 &1550424403686007317
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1033,6 +1033,11 @@ MonoBehaviour:
 --- !u!1 &132745738428054978 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7388843969407263893, guid: 99b09574772608c4da27ca0cf5ee2f56, type: 3}
+  m_PrefabInstance: {fileID: 7448366622873344343}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2510472557595411799 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5011121582797134848, guid: 99b09574772608c4da27ca0cf5ee2f56, type: 3}
   m_PrefabInstance: {fileID: 7448366622873344343}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8087219911822252724 stripped
